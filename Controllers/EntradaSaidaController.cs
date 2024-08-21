@@ -62,6 +62,14 @@ namespace Analista_Aula01.Controllers
         {
             if (ModelState.IsValid)
             {
+                entradaSaida.DataMovimentacao = DateTime.Now;
+                var produto = await _context.Produto.FindAsync(entradaSaida.ProdutoId);
+                if(entradaSaida.TipoMovimentacaoId == 1)
+                     produto.QntdEstoque = produto.QntdEstoque + entradaSaida.QntdMovimentacao;
+                else
+                    produto.QntdEstoque = produto.QntdEstoque - entradaSaida.QntdMovimentacao;
+
+                _context.Update(produto);
                 _context.Add(entradaSaida);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
